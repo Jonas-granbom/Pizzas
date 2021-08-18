@@ -30,7 +30,7 @@ class PizzaEndToEndTest {
         var response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).join();
 
                 assertThat(response.statusCode()).isEqualTo(200);
-                assertThat(response.body()).isEqualTo("[{\"id\":1,\"name\":\"Hawaii\",\"price\":80,\"ingredients\":\"Ost, tomatsås, skinka, ananas\"}]");
+                assertThat(response.body()).isEqualTo("[{\"id\":9,\"name\":\"Margharitus\",\"price\":80,\"ingredients\":\"Ost, tomatsås\"}]");
 
 
     }

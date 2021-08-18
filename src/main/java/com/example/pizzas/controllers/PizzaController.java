@@ -21,7 +21,7 @@ public class PizzaController {
         return pizzaRepository.findAll();
     }
 
-    @GetMapping("/pizzas/{id}")
+    @GetMapping(value ="/pizzas/{id}")
     public Optional<Pizza> getOnePizza(@PathVariable Long id) {
         return pizzaRepository.findById(id);
     }
