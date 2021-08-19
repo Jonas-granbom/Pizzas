@@ -1,5 +1,7 @@
 package com.example.pizzas.controllers;
 
+import org.apache.velocity.exception.ResourceNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.pizzas.entities.Pizza;
 import com.example.pizzas.repositories.PizzaRepository;
@@ -21,7 +23,7 @@ public class PizzaController {
         return pizzaRepository.findAll();
     }
 
-    @GetMapping(value ="/pizzas/{id}")
+    @GetMapping(value = "/pizzas/{id}")
     public Optional<Pizza> getOnePizza(@PathVariable Long id) {
         return pizzaRepository.findById(id);
     }
@@ -40,6 +42,45 @@ public class PizzaController {
     @GetMapping("/pizzas/query")
     public List<Pizza> getPizzaByIdUsingQueryParam(@RequestParam String name) {
         return pizzaRepository.findAllByName(name);
+    }
+
+    @PutMapping("/pizzas/{id}")
+    public void putPizza(
+            @PathVariable Long id,
+            @RequestBody Pizza pizza) {
+        Pizza pizzaboiii = new Pizza(id, pizza.getName(), pizza.getPrice(), pizza.getIngredients());
+        pizzaRepository.save(pizzaboiii);
+
+    }
+
+    @PatchMapping("/pizzas/{id}")
+    public ResponseEntity<Pizza> patchPizza(@PathVariable(value = "id") Long id, @RequestBody Pizza pizza) {
+
+        Pizza oldPizza = pizzaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Pizza not found" + id));
+        Pizza newPizza = new Pizza();
+
+        if(oldPizza.getName().equals(pizza.getName())|| pizza.getName() == null ){
+            newPizza.setName(oldPizza.getName());
+        }else{
+            newPizza.setName(pizza.getName());
+        }
+        if(oldPizza.getIngredients().equals(pizza.getIngredients())|| pizza.getIngredients() == null ){
+            newPizza.setIngredients(oldPizza.getIngredients());
+        }else{
+            newPizza.setIngredients(pizza.getIngredients());
+        }
+        if(oldPizza.getPrice() == (pizza.getPrice())|| pizza.getPrice() == 0 ){
+            newPizza.setPrice(oldPizza.getPrice());
+        }else{
+            newPizza.setPrice(pizza.getPrice());
+        }
+
+        newPizza.setId(id);
+
+        pizzaRepository.save(newPizza);
+
+        return ResponseEntity.ok(newPizza);
+
     }
 
 
